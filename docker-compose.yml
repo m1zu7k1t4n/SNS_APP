@@ -1,0 +1,44 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.7
+    container_name: mysql_host
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+      MYSQL_DATABASE: demo
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_HOST: '%'
+      TZ: 'Asia/Tokyo'
+    ports:
+      - 3306:3306
+    volumes:
+      - ./docker/db/data:/var/lib/mysql:delegated
+      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf:delegated
+      - ./docker/db/init:/docker-entrypoint-initdb.d:consistent
+    command: --innodb-use-native-aio=0
+
+  golang:
+    build: ./docker/golang/
+    image: restful_go:1.11-alpine
+    container_name: golang_host
+    working_dir: '/usr/local/src'
+    tty: true
+    ports:
+      - 8080:8080
+    volumes:
+      - ./docker/golang/src:/usr/local/src:consistent
+    links:
+      - db
+
+  front:
+    image: nginx:1.15-alpine
+    container_name: front_host
+    ports:
+      - 5500:80
+    volumes:
+      - ./docker/front/content:/usr/share/nginx/html
+    links:
+      - golang
+
