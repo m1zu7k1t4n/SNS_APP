@@ -6,10 +6,9 @@ import (
 
 type (
   userModel struct {
-    gorm.Model
-    Email			string `json:"email", db:"email", gorm:"size:255;not null;unique"`
-    UserName	string `json:"username", db:"username", gorm:"size:255;not null"`
-    Password	string `json:"password", db:"password", gorm:"size:255"`
+    Email			string `json:"email", gorm:"unique;not null"`
+    UserName	string `json:"username", gorm:"not null"`
+    Password	string `json:"password", gorm:"not null"`
   }
 
   // todoModel describes a todoModel type

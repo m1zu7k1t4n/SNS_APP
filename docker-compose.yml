@@ -14,7 +14,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./docker/db/data:/var/lib/mysql:delegated
+      # - ./docker/db/data:/var/lib/mysql:delegated
       - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf:delegated
       - ./docker/db/init:/docker-entrypoint-initdb.d:consistent
     command: --innodb-use-native-aio=0
