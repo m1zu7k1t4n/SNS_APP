@@ -7,7 +7,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: test
       MYSQL_PASSWORD: test
-      MYSQL_DATABASE: demo
+      MYSQL_DATABASE: sns
       MYSQL_ROOT_HOST: '%'
       MYSQL_HOST: '%'
       TZ: 'Asia/Tokyo'
@@ -23,12 +23,14 @@ services:
     build: ./docker/golang/
     image: restful_go:1.11-alpine
     container_name: golang_host
-    working_dir: '/usr/local/src'
+    working_dir: '/go/src/github.com/arasan01/app'
+    environment:
+      GO_ENV: develop
     tty: true
     ports:
       - 8080:8080
     volumes:
-      - ./docker/golang/src:/usr/local/src:consistent
+      - ./docker/golang/app:/go/src/github.com/arasan01/app:consistent
     links:
       - db
 

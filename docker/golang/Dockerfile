@@ -5,5 +5,7 @@ RUN set -x && \
   go get -u github.com/gin-gonic/gin; \
   go get -u github.com/gin-contrib/cors; \
   go get -u github.com/jinzhu/gorm; \
-  go get github.com/go-sql-driver/mysql
+  go get github.com/go-sql-driver/mysql; \
+  go get github.com/joho/godotenv; \
+  go get -u golang.org/x/crypto/bcrypt
 
