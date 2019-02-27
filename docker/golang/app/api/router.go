@@ -1,23 +1,22 @@
-package main
+package api
 
 import (
   "os"
   "fmt"
-  "log"
-  "golang.org/x/crypto/bcrypt"
 
   "github.com/gin-contrib/cors"
   "github.com/gin-gonic/gin"
   "github.com/jinzhu/gorm"
   _ "github.com/jinzhu/gorm/dialects/mysql"
 
-  "github.com/arasan01/app/env"
+  "github.com/arasan01/app/config"
+  "github.com/arasan01/app/model"
 )
 
 var db *gorm.DB
 
-func init() {
-  env.Env_load()
+func Router_init() {
+  config.Env_load()
   //open a db connection
   var err error
   db, err = gorm.Open("mysql",
@@ -35,35 +34,32 @@ func init() {
   db.LogMode(true)
 
   //Migrate the schema
-  db.AutoMigrate(&userModel{})
-  db.AutoMigrate(&todoModel{})
+  db.AutoMigrate(&model.UserModel{})
+  // db.AutoMigrate(&model.TodoModel{})
 }
 
-func main() {
+func Router() {
 
   router := gin.Default()
   router.Use(cors.Default())
 
   router.GET("/", versionGET)
 
-  v1 := router.Group("/api/v1/todos")
+  account := router.Group("/api/v1/account")
   {
-    v1.POST("/", createTodo)
-    v1.GET("/", fetchAllTodo)
-    v1.GET("/:id", fetchSingleTodo)
-    v1.PUT("/:id", updateTodo)
-    v1.DELETE("/:id", deleteTodo)
+    account.POST("/token", tokenGET)
+    account.POST("/register", registerUser)
   }
+
+  // v1 := router.Group("/api/v1/todos")
+  // {
+  //   v1.POST("/", createTodo)
+  //   v1.GET("/", fetchAllTodo)
+  //   v1.GET("/:id", fetchSingleTodo)
+  //   v1.PUT("/:id", updateTodo)
+  //   v1.DELETE("/:id", deleteTodo)
+  // }
   router.Run(":8080")
-}
-
-func registerUser(c *gin.Context) {
-  hash, err := bcrypt.GenerateFromPassword([]byte(c.PostForm("password")), bcrypt.DefaultCost)
-  if err != nil {
-    log.Fatal("Error Generating Password")
-  }
-
-  user := userModel{UserName: c.PostForm("username"), Password: string(hash)}
-  db.Create(&user)
+  defer db.Close()
 }
 

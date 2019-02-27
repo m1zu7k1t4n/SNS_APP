@@ -34,13 +34,13 @@ services:
     links:
       - db
 
-  front:
-    image: nginx:1.15-alpine
-    container_name: front_host
-    ports:
-      - 5500:80
-    volumes:
-      - ./docker/front/content:/usr/share/nginx/html
-    links:
-      - golang
+  # front:
+  #   image: nginx:1.15-alpine
+  #   container_name: front_host
+  #   ports:
+  #     - 5500:80
+  #   volumes:
+  #     - ./docker/front/content:/usr/share/nginx/html
+  #   links:
+  #     - golang
 

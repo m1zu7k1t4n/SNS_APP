@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
   "net/http"
@@ -10,3 +10,4 @@ func versionGET(c *gin.Context) {
   version := os.Getenv("VERSION")
   c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "version": version})
 }
+

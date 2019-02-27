@@ -1,4 +1,4 @@
-package env
+package config
 
 import (
   "os"
@@ -12,12 +12,12 @@ func Env_load() {
     os.Setenv("GO_ENV", "develop")
   }
 
-  err := godotenv.Load(fmt.Sprintf("./env/.env.%s", os.Getenv("GO_ENV")))
+  err := godotenv.Load(fmt.Sprintf("./config/.env.%s", os.Getenv("GO_ENV")))
   if err != nil {
     log.Fatal("Error loading .env file")
   }
 
-  err = godotenv.Load("./env/version.env")
+  err = godotenv.Load("./config/version.env")
   if err != nil {
     log.Fatal("Error loading version.env file")
   }

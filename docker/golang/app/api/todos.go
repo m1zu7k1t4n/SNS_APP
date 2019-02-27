@@ -1,21 +1,22 @@
-package main
+package api
 
 import (
   "net/http"
   "github.com/gin-gonic/gin"
+  "github.com/arasan01/app/model"
 )
 
 // createTodo add a new todo
 func createTodo(c *gin.Context) {
-  todo := todoModel{Title: c.PostForm("title"), Body: c.PostForm("body")}
+  todo := model.TodoModel{Title: c.PostForm("title"), Body: c.PostForm("body")}
   db.Create(&todo)
   c.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "message": "Todo item created successfully!", "resourceId": todo.ID})
 }
 
 // fetchAllTodo fetch all todos
 func fetchAllTodo(c *gin.Context) {
-  var todos []todoModel
-  var _todos []transformedTodo
+  var todos []model.TodoModel
+  var _todos []model.TransformedTodo
 
   db.Find(&todos)
   if len(todos) <= 0 {
@@ -25,14 +26,14 @@ func fetchAllTodo(c *gin.Context) {
 
   //transforms the todos for building a good response
   for _, item := range todos {
-    _todos = append(_todos, transformedTodo{ID: item.ID, Title: item.Title, Body: item.Body})
+    _todos = append(_todos, model.TransformedTodo{ID: item.ID, Title: item.Title, Body: item.Body})
   }
   c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": _todos})
 }
 
 // fetchSingleTodo fetch a single todo
 func fetchSingleTodo(c *gin.Context) {
-  var todo todoModel
+  var todo model.TodoModel
   todoID := c.Param("id")
   db.First(&todo, todoID)
   if todo.ID == 0 {
@@ -40,13 +41,13 @@ func fetchSingleTodo(c *gin.Context) {
     return
   }
 
-  _todo := transformedTodo{ID: todo.ID, Title: todo.Title, Body: todo.Body}
+  _todo := model.TransformedTodo{ID: todo.ID, Title: todo.Title, Body: todo.Body}
   c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": _todo})
 }
 
 // updateTodo update a todo
 func updateTodo(c *gin.Context) {
-  var todo todoModel
+  var todo model.TodoModel
   todoID := c.Param("id")
 
   db.First(&todo, todoID)
@@ -63,7 +64,7 @@ func updateTodo(c *gin.Context) {
 
 // deleteTodo remove a todo
 func deleteTodo(c *gin.Context) {
-  var todo todoModel
+  var todo model.TodoModel
   todoID := c.Param("id")
 
   db.First(&todo, todoID)
